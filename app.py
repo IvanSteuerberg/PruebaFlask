@@ -62,7 +62,7 @@ def update(id):
 
 
 @app.route('/home')
-def home():
+def home_page():
     return render_template('home.html')
 
 
