@@ -1,7 +1,7 @@
 from app import app, db
-from flask import render_template, request, redirect
-from app.models import Todo, Item
-
+from flask import render_template, request, redirect, url_for
+from app.models import Todo, Item, User
+from app.forms import RegisterForm
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -57,3 +57,17 @@ def home_page():
 def market_page():
     items = Item.query.all()
     return render_template('market.html', items=items)
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def register_page():
+    form = RegisterForm()
+    if form.validate_on_submit():
+        user_to_create = User(username=form.username.data,
+                              email_address=form.email_address.data,
+                              password=form.password1.data,
+                              )
+        db.session.add(user_to_create)
+        db.session.commit()
+        return redirect(url_for('market_page'))
+    return render_template('register.html', form=form)
