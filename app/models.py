@@ -1,5 +1,5 @@
 from datetime import datetime
-from app import db
+from app import db, bcrypt
 
 
 class Todo(db.Model):
@@ -27,6 +27,14 @@ class User(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     username = db.Column(db.String(30), unique=True, nullable=False)
     email_address = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(60), nullable=False)
+    password_hash = db.Column(db.String(60), nullable=False)
     budget = db.Column(db.Integer, nullable=False, default=1000)
     items = db.relationship('Item', backref='owned_user', lazy=True)
+
+    @property
+    def password(self):
+        return self.password
+
+    @password.setter
+    def password(self, plain_text_password):
+        self.password_hash = bcrypt.generate_password_hash(plain_text_password).decode('utf-8')
