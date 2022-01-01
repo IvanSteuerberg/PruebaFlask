@@ -1,7 +1,8 @@
 from app import app, db
-from flask import render_template, request, redirect, url_for
+from flask import render_template, request, redirect, url_for, flash
 from app.models import Todo, Item, User
 from app.forms import RegisterForm
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -70,7 +71,7 @@ def register_page():
         db.session.add(user_to_create)
         db.session.commit()
         return redirect(url_for('market_page'))
-    if form.errors !={}:
+    if form.errors != {}:
         for err_msg in form.errors.values():
-            print(f'There was an error creating a user {err_msg}')
+            flash(f'There was an error creating a user {err_msg}', category='danger')
     return render_template('register.html', form=form)
