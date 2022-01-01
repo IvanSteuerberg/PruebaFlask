@@ -1,8 +1,8 @@
-from flask_login import login_user, logout_user
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
 from app.models import Todo, Item, User
 from app.forms import RegisterForm, LoginForm
+from flask_login import login_user, logout_user, login_required
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -56,6 +56,7 @@ def home_page():
 
 
 @app.route('/market')
+@login_required
 def market_page():
     items = Item.query.all()
     return render_template('market.html', items=items)
